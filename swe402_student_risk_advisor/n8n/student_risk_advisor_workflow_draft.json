@@ -1,0 +1,112 @@
+{
+  "name": "Student Academic Risk Advisor",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "student-risk-advisor",
+        "httpMethod": "POST",
+        "responseMode": "responseNode"
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/predict",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.body || $json) }}"
+      },
+      "id": "prediction-request",
+      "name": "Call Student Risk API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        280,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ 'The model prediction result is: ' + JSON.stringify($json) + '\\n\\nWrite a risk summary, likely reason, recommended action, and a short student message.' }}",
+        "options": {
+          "systemMessage": "You are an academic support assistant. Use the model prediction and student details to recommend a responsible support action. Keep the recommendation clear, specific, and suitable for a lecturer or academic advisor. Do not make medical, legal, or disciplinary claims."
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent Recommendation",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        560,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond-to-webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        840,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Call Student Risk API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call Student Risk API": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Recommendation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent Recommendation": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2026-07-03T00:00:00.000Z",
+  "versionId": "draft"
+}

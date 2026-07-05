@@ -1,0 +1,55 @@
+{
+  "dataset": "UCI Student Performance - Portuguese language dataset",
+  "row_count": 649,
+  "feature_count": 32,
+  "target_definition": {
+    "High Risk": "G3 < 10",
+    "Medium Risk": "10 <= G3 <= 13",
+    "Low Risk": "G3 >= 14"
+  },
+  "class_distribution": {
+    "High Risk": 100,
+    "Medium Risk": 355,
+    "Low Risk": 194
+  },
+  "accuracy": 0.8308,
+  "weighted_f1": 0.8322,
+  "features": {
+    "categorical": [
+      "school",
+      "sex",
+      "address",
+      "famsize",
+      "Pstatus",
+      "Mjob",
+      "Fjob",
+      "reason",
+      "guardian",
+      "schoolsup",
+      "famsup",
+      "paid",
+      "activities",
+      "nursery",
+      "higher",
+      "internet",
+      "romantic"
+    ],
+    "numeric": [
+      "age",
+      "Medu",
+      "Fedu",
+      "traveltime",
+      "studytime",
+      "failures",
+      "famrel",
+      "freetime",
+      "goout",
+      "Dalc",
+      "Walc",
+      "health",
+      "absences",
+      "G1",
+      "G2"
+    ]
+  }
+}
